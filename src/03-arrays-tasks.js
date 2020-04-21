@@ -586,7 +586,8 @@ function selectMany(arr, childrenSelector) {
  *   [[[ 1, 2, 3]]], [ 0, 0, 1 ]      => 2        (arr[0][0][1])
  */
 function getElementByIndexes(arr, indexes) {
-  return arr.flat(Infinity)[indexes[indexes.length - 1]];
+  if (indexes.length === 1) return arr[indexes[0]];
+  return getElementByIndexes(arr[indexes.shift()], indexes);
 }
 
 /**
