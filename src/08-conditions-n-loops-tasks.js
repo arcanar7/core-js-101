@@ -133,26 +133,20 @@ function isTriangle(a, b, c) {
  */
 function doRectanglesOverlap(rect1, rect2) {
   const {
-    top: top1,
-    left: left1,
-    width: width1,
-    height: height1,
+    top: top1, left: left1, width: width1, height: height1,
   } = rect1;
   const {
-    top: top2,
-    left: left2,
-    width: width2,
-    height: height2,
+    top: top2, left: left2, width: width2, height: height2,
   } = rect2;
   return (
     (top1 + height1 > top2
       && left1 + width1 > left2
       && top1 <= top2
       && left1 <= left2)
-      || (top2 + height2 > top1
-        && left2 + width2 > left1
-        && top2 <= top1
-        && left2 <= left1)
+    || (top2 + height2 > top1
+      && left2 + width2 > left1
+      && top2 <= top1
+      && left2 <= left1)
   );
 }
 
@@ -200,13 +194,16 @@ function isInsideCircle({ center, radius }, point) {
 function findFirstSingleChar(str) {
   const result = new Map();
   let singleChar;
-  str.split('').reverse().forEach((char) => {
-    if (result.has(char)) {
-      result.set(char, result.get(char) + 1);
-    } else {
-      result.set(char, 1);
-    }
-  });
+  str
+    .split('')
+    .reverse()
+    .forEach((char) => {
+      if (result.has(char)) {
+        result.set(char, result.get(char) + 1);
+      } else {
+        result.set(char, 1);
+      }
+    });
   result.forEach((value, key) => {
     if (value === 1) singleChar = key;
   });
@@ -414,8 +411,11 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/webalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  const splitPathes = pathes.map((i) => i.split('/'));
+  const rotate = splitPathes[0].map((e, i) => splitPathes.map((item) => item[i]));
+  const allEqualElements = rotate.filter((arr) => arr.every((e) => e === arr[0]));
+  return [...allEqualElements, ['']].map((item) => item[0]).join('/');
 }
 
 /**
@@ -436,8 +436,12 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const transpose = (a) => a[0].map((x, i) => a.map((y) => y[i]));
+  const dotproduct = (a, b) => a.map((x, i) => a[i] * b[i]).reduce((m, n) => m + n);
+  const multiply = (a, b) => a.map((x) => transpose(b).map((y) => dotproduct(x, y)));
+
+  return multiply(m1, m2);
 }
 
 /**
@@ -470,8 +474,39 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  const winCondition = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  let win;
+
+  const positionFlat = [];
+  positionFlat.length = 9;
+  positionFlat.fill(undefined);
+  for (let i = 0; i < position.length; i += 1) {
+    for (let j = 0; j < position[i].length; j += 1) {
+      positionFlat[i * 3 + j] = position[i][j];
+    }
+  }
+
+  winCondition.forEach((arr) => {
+    const xWin = arr.every((index) => positionFlat[index] === 'X');
+    const zeroWin = arr.every((index) => positionFlat[index] === '0');
+    if (xWin) {
+      win = 'X';
+    } else if (zeroWin) {
+      win = '0';
+    }
+  });
+
+  return win;
 }
 
 module.exports = {
